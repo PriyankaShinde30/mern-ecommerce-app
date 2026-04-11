@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const userModel = require('../models/userModel');
+const jwt = require('jsonwebtoken');
 
 exports.registerUser = async (req, res) => {
     try {
@@ -33,7 +34,9 @@ exports.loginUser = async (req, res) => {
 
         const user = users[0];
 
-        res.status(200).json({message: 'Login successful'});
+        const token = jwt.sign({user_id: user.user_id}, "secretkey", {expiresIn: "1d"});
+
+        res.status(200).json({message: 'Login successful', token});
     } catch (err) {
         res.status(500).json({message: 'Server error', err})
     }
